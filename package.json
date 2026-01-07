@@ -9,7 +9,9 @@
     "prebuild": "expo prebuild",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "windows": "npx @react-native-community/cli run-windows",
+    "test:windows": "jest --config jest.config.windows.js"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -37,6 +39,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@rnx-kit/jest-preset": "^0.1.17",
     "@types/react": "~19.1.10",
     "eslint": "^9.25.1",
     "eslint-config-expo": "~10.0.0",
@@ -47,5 +50,12 @@
     "typescript": "~5.9.2"
   },
   "packageManager": "yarn@4.12.0",
-  "private": true
+  "private": true,
+  "react-native-windows": {
+    "init-windows": {
+      "name": "WewayanganMediaplayer",
+      "namespace": "WewayanganMediaplayer",
+      "template": "cpp-app"
+    }
+  }
 }
