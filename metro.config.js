@@ -1,4 +1,8 @@
+// Learn more https://docs.expo.io/guides/customizing-metro
+const { getDefaultConfig: getDefaultConfigExpo } = require('expo/metro-config');
 const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
+
+const { withNativeWind } = require('nativewind/metro');
 
 const fs = require('fs');
 const path = require('path');
@@ -7,6 +11,12 @@ const rnwPath = fs.realpathSync(
 );
 
 //
+
+/** @type {import('expo/metro-config').MetroConfig} */
+
+const configExpo = getDefaultConfigExpo(__dirname);
+
+const configNativeWindExpo = withNativeWind(configExpo, { input: './global.css' });
 
 /**
  * Metro configuration
@@ -40,4 +50,4 @@ const config = {
   },
 };
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+module.exports = mergeConfig(getDefaultConfig(__dirname), configNativeWindExpo, config);
