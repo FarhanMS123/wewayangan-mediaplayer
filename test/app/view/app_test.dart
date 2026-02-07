@@ -3,13 +3,13 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wewayangan_mediapreview/app/app.dart';
-import 'package:wewayangan_mediapreview/counter/counter.dart';
+import 'package:wewayangan_mediapreview/pages/video/video.dart';
 
 void main() {
   group('App', () {
     testWidgets('renders CounterPage', (tester) async {
       await tester.pumpWidget(App());
-      expect(find.byType(CounterPage), findsOneWidget);
+      expect(find.byType(VideoPage), findsOneWidget);
     });
   });
 }

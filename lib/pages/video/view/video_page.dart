@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wewayangan_mediapreview/counter/counter.dart';
+import 'package:wewayangan_mediapreview/pages/video/video.dart';
 import 'package:wewayangan_mediapreview/l10n/l10n.dart';
 
-class CounterPage extends StatelessWidget {
-  const CounterPage({super.key});
+class VideoPage extends StatelessWidget {
+  const VideoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => CounterCubit(),
-      child: const CounterView(),
+      child: const VideoView(),
     );
   }
 }
 
-class CounterView extends StatelessWidget {
-  const CounterView({super.key});
+class VideoView extends StatelessWidget {
+  const VideoView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.counterAppBarTitle)),
-      body: const Center(child: CounterText()),
+      body: const Center(child: VideoText()),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -43,8 +43,8 @@ class CounterView extends StatelessWidget {
   }
 }
 
-class CounterText extends StatelessWidget {
-  const CounterText({super.key});
+class VideoText extends StatelessWidget {
+  const VideoText({super.key});
 
   @override
   Widget build(BuildContext context) {
