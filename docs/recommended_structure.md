@@ -29,15 +29,99 @@ lib/
 │   ├── widgets/         # App implementation of design system (Buttons, Cards)
 │   └── theme/           # Theme definitions
 │
-├── [feature_name]/      # A Feature (e.g., login, dashboard, settings)
-│   ├── ...
+├── pages/               # (Optional) Grouping for page-level features if desired
+│   ├── video/           # Feature: Video (e.g., login, dashboard, settings)
+│   └── ...
 │
 └── ...
 ```
 
 ---
 
-## 2. The "Complex Feature" Structure (Multi-page)
+## 2. Structure Recommendation for `lib/app`
+
+The `app` directory is the entry point for the UI. It sets up the global context (Providers, Theme, Routing).
+
+**Recommended Structure:**
+
+```
+lib/app/
+├── app.dart              # Barrel file
+├── view/
+│   ├── app.dart          # The Root Widget (MaterialApp.router / MaterialApp)
+│   └── app_view.dart     # (Optional) If you have a global wrapper layout (uncommon but possible)
+├── routes/
+│   ├── routes.dart       # Route definitions (e.g., GoRouter configuration)
+│   └── route_observer.dart # Analytics or logging for navigation
+├── theme/
+│   ├── app_theme.dart    # ThemeData configuration
+│   └── app_colors.dart   # Color palette
+└── bloc/                 # GLOBAL State (only if absolutely necessary)
+    ├── app_bloc.dart     # Top-level state (e.g., User Authentication status, Theme mode)
+    └── app_event.dart
+```
+
+**What goes where?**
+- **`view/app.dart`**: This is where you configure `MaterialApp`, `theme`, `localizationsDelegates`, and `routerConfig`.
+- **`routes/`**: Keep your routing logic here. If using `auto_route` or `go_router`, define the top-level configuration here.
+- **`theme/`**: Theme data often lives in `lib/shared/theme`, but if it's very specific to the `MaterialApp` configuration, it can live here. *Recommendation: Check `lib/shared/theme` first.*
+- **`bloc/`**: Only put truly global state here, like "Is the user authenticated?" or "Is the app in Dark Mode?".
+
+---
+
+## 3. Structure Recommendation for `lib/pages/video` (Feature Example)
+
+This folder replaces `lib/counter`. It should contain EVERYTHING related to the "Video" feature.
+
+**Scenario**: A video feature with a list of videos, a video player, and video details.
+
+**Recommended Structure:**
+
+```
+lib/pages/video/
+├── video.dart                   # Barrel file (exports Page and maybe key models)
+│
+├── models/                      # Feature-specific models
+│   ├── video_item.dart          # Data class for a video
+│   └── video_filter.dart        # Filter options (e.g., "Trending", "New")
+│
+├── cubit/
+│   ├── video_list/              # State for the list view
+│   │   ├── video_list_cubit.dart
+│   │   └── video_list_state.dart
+│   │
+│   ├── video_player/            # State for the player
+│   │   ├── video_player_cubit.dart
+│   │   └── video_player_state.dart
+│   │
+│   └── video_repository.dart    # (Optional) Facade for API calls specific to videos
+│
+├── view/
+│   ├── video_page.dart          # Entry point (Route). Provides BlocProviders.
+│   ├── video_view.dart          # Main Layout (Scaffold)
+│   │
+│   ├── specific_views/          # Break down complex sub-views
+│   │   ├── video_list_view.dart
+│   │   └── video_player_view.dart
+│   │
+│   └── widgets/                 # UI components used ONLY in this feature
+│       ├── video_card.dart      # Thumbnail + Title card
+│       ├── player_controls.dart # Play/Pause/Seek buttons
+│       └── video_info_sheet.dart # Bottom sheet with description
+│
+└── widgets/                     # (Optional) Shared widgets for the feature
+    └── ...
+```
+
+**Key Principles for `lib/pages/video`:**
+1.  **`view/video_page.dart`**: This is the "Container". It connects the `VideoListCubit` and `VideoPlayerCubit` to the UI.
+2.  **`view/video_view.dart`**: The "Presenter". It builds the `Scaffold` and decides whether to show the list or the player (or both, if split-screen).
+3.  **`models/`**: If `VideoItem` is used *only* here, keep it here. If it's used by other features (e.g., "Favorites"), move it to `lib/models` or `lib/packages/api_repository`.
+
+
+---
+
+## 4. The "Complex Feature" Structure (Multi-page)
 
 For features that contain multiple pages (e.g., an `Orders` feature that has a `List` page, a `Detail` page, and a `History` page).
 
@@ -85,7 +169,7 @@ lib/orders/
 
 ---
 
-## 3. Deep Dive: What goes into `view/`?
+## 5. Deep Dive: What goes into `view/`?
 
 The `view` directory is for **UI Layer**. It shouldn't contain business logic.
 
@@ -133,7 +217,7 @@ lib/profile/view/
 
 ---
 
-## 4. Deep Dive: What goes into `cubit/` (or `bloc/`)?
+## 6. Deep Dive: What goes into `cubit/` (or `bloc/`)?
 
 The `cubit` (or `bloc`) directory is for **Business Logic & State**.
 
@@ -155,7 +239,7 @@ The `cubit` (or `bloc`) directory is for **Business Logic & State**.
 
 ---
 
-## 5. Handling Custom Components
+## 7. Handling Custom Components
 
 Where do "Custom Components" go? It depends on **reuse scope**.
 
