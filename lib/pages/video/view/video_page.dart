@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wewayangan_mediapreview/pages/video/video.dart';
+import 'package:yaru/yaru.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
 class VideoPage extends StatelessWidget {
   const VideoPage({super.key});
@@ -19,8 +22,22 @@ class VideoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Stack(
+    return Stack(
+      alignment: .topCenter,
       fit: .expand,
+      children: [
+        Container(
+          color: Colors.red,
+        ),
+        const Row(
+          children: [],
+        ),
+        const Positioned(
+          child: Column(
+            children: [],
+          ),
+        ),
+      ],
     );
   }
 }
