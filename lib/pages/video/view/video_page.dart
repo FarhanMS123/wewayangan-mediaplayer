@@ -12,32 +12,74 @@ class VideoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => CounterCubit(),
-      child: const VideoView(),
+      child: VideoView(
+        onBack: () {},
+      ),
     );
   }
 }
 
 class VideoView extends StatelessWidget {
-  const VideoView({super.key});
+  const VideoView({required this.onBack, super.key});
+
+  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: .topCenter,
-      fit: .expand,
-      children: [
-        Container(
-          color: Colors.red,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        iconTheme: Theme.of(context).iconTheme.copyWith(
+          color: Colors.white,
         ),
-        const Row(
-          children: [],
+        textTheme: Theme.of(context).textTheme.apply(
+          bodyColor: Colors.white,
+          displayColor: Colors.white,
         ),
-        const Positioned(
-          child: Column(
-            children: [],
+      ),
+      child: Stack(
+        alignment: .topLeft,
+        children: [
+          Container(
+            color: Colors.blueGrey,
           ),
-        ),
-      ],
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: .topCenter,
+                end: .bottomCenter,
+                colors: [
+                  Colors.black,
+                  Color(0x01000000),
+                ],
+              ),
+            ),
+            child: YaruTile(
+              leading: YaruIconButton(
+                onPressed: onBack,
+                icon: const Icon(
+                  YaruIcons.go_previous,
+                ),
+              ),
+              title: const Text('Song Title'),
+              subtitle: const Text('Filename'),
+              trailing: YaruIconButton(
+                onPressed: () {},
+                icon: const Icon(YaruIcons.view_more),
+              ),
+            ),
+          ),
+          // Row(
+          //   children: [
+          //     ,
+          //   ],
+          // ),
+          // const Positioned(
+          //   child: Column(
+          //     children: [],
+          //   ),
+          // ),
+        ],
+      ),
     );
   }
 }
