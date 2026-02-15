@@ -1,6 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:wewayangan_mediapreview/pages/video/video.dart';
-import 'package:wewayangan_mediapreview/l10n/l10n.dart';
+import 'package:yaru/yaru.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -8,14 +9,21 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
-        useMaterial3: true,
+      themeMode: .dark,
+      theme: yaruLight,
+      darkTheme: yaruDark,
+      highContrastTheme: yaruHighContrastLight,
+      highContrastDarkTheme: yaruHighContrastDark,
+      debugShowCheckedModeBanner: false,
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch,
+          PointerDeviceKind.stylus,
+          PointerDeviceKind.unknown,
+          PointerDeviceKind.trackpad,
+        },
       ),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
       home: const VideoPage(),
     );
   }

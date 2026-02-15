@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:media_kit/media_kit.dart';
@@ -39,9 +40,9 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   SemanticsBinding.instance.ensureSemantics();
   MediaKit.ensureInitialized();
 
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+  if (!kIsWeb) {
     await windowManager.ensureInitialized();
-    WindowOptions windowOptions = const WindowOptions(
+    const windowOptions = WindowOptions(
       skipTaskbar: false,
       titleBarStyle: .normal,
       windowButtonVisibility: true,
