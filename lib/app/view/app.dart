@@ -10,10 +10,21 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       themeMode: .dark,
-      theme: yaruLight,
-      darkTheme: yaruDark,
-      highContrastTheme: yaruHighContrastLight,
-      highContrastDarkTheme: yaruHighContrastDark,
+      // theme: yaruLight,
+      // darkTheme: yaruDark,
+      darkTheme:
+          ThemeData(
+            brightness: .dark,
+            useMaterial3: true,
+            colorSchemeSeed: Colors.black.withValues(alpha: 0.3),
+          ).copyWith(
+            colorScheme: const .dark(
+              onSurface: Colors.white,
+              onSurfaceVariant: Colors.white,
+            ),
+          ),
+      // highContrastTheme: yaruHighContrastLight,
+      // highContrastDarkTheme: yaruHighContrastDark,
       debugShowCheckedModeBanner: false,
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: {

@@ -27,33 +27,102 @@ class VideoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: .topLeft,
+      alignment: .topCenter,
       children: [
         Container(
-          color: Colors.blueGrey,
+          color: Colors.white,
         ),
-        ColoredBox(
-          color: Colors.black.withValues(alpha: 0.3),
-          child: YaruTile(
-            leading: YaruIconButton(
-              onPressed: onBack,
-              icon: const Icon(YaruIcons.go_previous),
-            ),
-            title: const Text('Song Title'),
-            subtitle: const Text('Filename'),
-            trailing: YaruIconButton(
-              onPressed: () {},
-              icon: const Icon(YaruIcons.view_more),
+        if (false)
+          ColoredBox(
+            color: Colors.black.withValues(alpha: 0.3),
+            child: YaruTile(
+              leading: YaruIconButton(
+                onPressed: onBack,
+                icon: const Icon(YaruIcons.go_previous),
+              ),
+              title: const Text('Song Title'),
+              subtitle: const Text('Filename'),
+              trailing: YaruIconButton(
+                onPressed: () {},
+                icon: const Icon(YaruIcons.view_more),
+              ),
             ),
           ),
-        ),
         Positioned(
-          left: 0,
-          right: 0,
+          // left: 0,
+          // right: 0,
           bottom: 0,
-          child: Container(
-            color: Colors.black.withValues(alpha: 0.3),
-            padding: const .all(8),
+          child: Column(
+            children: [
+              if (false)
+                Container(
+                  margin: const .all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    borderRadius: const .all(.circular(kYaruContainerRadius)),
+                  ),
+                  padding: const .all(8),
+                ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(kYaruContainerRadius),
+                    topRight: Radius.circular(kYaruContainerRadius),
+                  ),
+                ),
+                padding: const .all(8),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: .center,
+                      children: [
+                        Text(
+                          '9999:59:59.999',
+                          style: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(
+                                color: Colors.white,
+                                decoration: .none,
+                              ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(
+                            true
+                                ? Icons.volume_up_rounded
+                                : Icons.volume_off_rounded,
+                          ),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.fast_rewind_rounded),
+                          onPressed: () {},
+                        ),
+                        TextButton.icon(
+                          style: TextButton.styleFrom(
+                            iconColor: Colors.white,
+                            foregroundColor: Colors.white.withValues(
+                              alpha: 1,
+                            ),
+                          ),
+                          icon: const Icon(Icons.play_arrow_rounded),
+                          label: const Text('1x'),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.fast_forward_rounded),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.more_horiz_rounded),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ],
