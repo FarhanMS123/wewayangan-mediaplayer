@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:wewayangan_mediapreview/pages/video/video.dart';
+import 'package:wewayangan_mediapreview/video/video.dart';
 import 'package:yaru/yaru.dart';
 
 class VideoPage extends StatelessWidget {
@@ -32,37 +32,20 @@ class VideoView extends StatelessWidget {
         Container(
           color: Colors.white,
         ),
-        if (false)
-          ColoredBox(
-            color: Colors.black.withValues(alpha: 0.3),
-            child: YaruTile(
-              leading: YaruIconButton(
-                onPressed: onBack,
-                icon: const Icon(YaruIcons.go_previous),
-              ),
-              title: const Text('Song Title'),
-              subtitle: const Text('Filename'),
-              trailing: YaruIconButton(
-                onPressed: () {},
-                icon: const Icon(YaruIcons.view_more),
-              ),
-            ),
-          ),
         Positioned(
           // left: 0,
           // right: 0,
           bottom: 0,
           child: Column(
             children: [
-              if (false)
-                Container(
-                  margin: const .all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    borderRadius: const .all(.circular(kYaruContainerRadius)),
-                  ),
-                  padding: const .all(8),
+              Container(
+                margin: const .all(8),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  borderRadius: const .all(.circular(kYaruContainerRadius)),
                 ),
+                padding: const .all(8),
+              ),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.black.withValues(alpha: 0.4),
@@ -77,13 +60,8 @@ class VideoView extends StatelessWidget {
                     Row(
                       mainAxisAlignment: .center,
                       children: [
-                        Text(
+                        const Text(
                           '9999:59:59.999',
-                          style: Theme.of(context).textTheme.labelLarge
-                              ?.copyWith(
-                                color: Colors.white,
-                                decoration: .none,
-                              ),
                         ),
                         const SizedBox(width: 8),
                         IconButton(
@@ -99,12 +77,6 @@ class VideoView extends StatelessWidget {
                           onPressed: () {},
                         ),
                         TextButton.icon(
-                          style: TextButton.styleFrom(
-                            iconColor: Colors.white,
-                            foregroundColor: Colors.white.withValues(
-                              alpha: 1,
-                            ),
-                          ),
                           icon: const Icon(Icons.play_arrow_rounded),
                           label: const Text('1x'),
                           onPressed: () {},
@@ -126,6 +98,34 @@ class VideoView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class MediaHeader extends StatelessWidget {
+  const MediaHeader({
+    super.key,
+    required this.onBack,
+  });
+
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: Colors.black.withValues(alpha: 0.3),
+      child: YaruTile(
+        leading: YaruIconButton(
+          onPressed: onBack,
+          icon: const Icon(YaruIcons.go_previous),
+        ),
+        title: const Text('Song Title'),
+        subtitle: const Text('Filename'),
+        trailing: YaruIconButton(
+          onPressed: () {},
+          icon: const Icon(YaruIcons.view_more),
+        ),
+      ),
     );
   }
 }

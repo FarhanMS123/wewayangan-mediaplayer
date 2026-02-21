@@ -3,7 +3,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wewayangan_mediapreview/app/app.dart';
-import 'package:wewayangan_mediapreview/pages/video/video.dart';
+import 'package:wewayangan_mediapreview/video/video.dart';
 
 void main() {
   group('App', () {

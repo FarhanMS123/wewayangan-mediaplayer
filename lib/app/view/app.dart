@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:wewayangan_mediapreview/pages/video/video.dart';
+import 'package:wewayangan_mediapreview/video/video.dart';
 import 'package:yaru/yaru.dart';
 
 class App extends StatelessWidget {
@@ -10,21 +10,22 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       themeMode: .dark,
-      // theme: yaruLight,
-      // darkTheme: yaruDark,
       darkTheme:
-          ThemeData(
-            brightness: .dark,
+          ThemeData.dark(
             useMaterial3: true,
-            colorSchemeSeed: Colors.black.withValues(alpha: 0.3),
           ).copyWith(
-            colorScheme: const .dark(
+            colorScheme: .fromSeed(
+              brightness: .dark,
+              seedColor: Colors.grey[900]!,
               onSurface: Colors.white,
               onSurfaceVariant: Colors.white,
             ),
+            textTheme: const TextTheme().apply(
+              bodyColor: Colors.white,
+              displayColor: Colors.white,
+            ),
+            iconTheme: const IconThemeData(color: Colors.white),
           ),
-      // highContrastTheme: yaruHighContrastLight,
-      // highContrastDarkTheme: yaruHighContrastDark,
       debugShowCheckedModeBanner: false,
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: {
@@ -35,7 +36,10 @@ class App extends StatelessWidget {
           PointerDeviceKind.trackpad,
         },
       ),
-      home: const VideoPage(),
+      home: const Material(
+        type: .transparency,
+        child: VideoPage(),
+      ),
     );
   }
 }
