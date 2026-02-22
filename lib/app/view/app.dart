@@ -16,13 +16,15 @@ class App extends StatelessWidget {
           ).copyWith(
             colorScheme: .fromSeed(
               brightness: .dark,
-              seedColor: Colors.grey[900]!,
+              seedColor: Colors.black,
+              primary: Colors.white,
               onSurface: Colors.white,
               onSurfaceVariant: Colors.white,
             ),
-            textTheme: const TextTheme().apply(
-              bodyColor: Colors.white,
-              displayColor: Colors.white,
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+              ),
             ),
             iconTheme: const IconThemeData(color: Colors.white),
           ),
