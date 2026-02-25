@@ -84,22 +84,64 @@ class VideoPanel extends StatelessWidget {
       ),
       padding: const .all(8),
       child: Column(
+        textDirection: .ltr,
+        mainAxisAlignment: .center,
         children: [
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
               trackHeight: 2,
               overlayShape: SliderComponentShape.noOverlay,
+              thumbShape: const LineSliderThumbShape(),
+              padding: .zero,
             ),
-            child: Slider(
-              max: 2 * 60 * 60,
-              value: 1 * 60 * 60,
-              padding: const .all(0),
-              onChanged: (value) {},
+            child: Container(
+              // width: double.infinity,
+              child: Slider(
+                max: 2 * 60 * 60,
+                value: 1 * 60 * 60,
+                onChanged: (value) {},
+              ),
             ),
           ),
           const VideoPanel_Control(),
         ],
       ),
+    );
+  }
+}
+
+class LineSliderThumbShape extends SliderComponentShape {
+  const LineSliderThumbShape();
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) => const Size(4, 16);
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
+    final Canvas canvas = context.canvas;
+    final paint = Paint()
+      ..color = sliderTheme.thumbColor ?? Colors.white
+      ..style = PaintingStyle.fill;
+    // Fixed size: 4px width, 16px height with 2px corner radius
+    final rect = Rect.fromCenter(
+      center: center,
+      width: 3,
+      height: 20,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(rect, const Radius.circular(6)),
+      paint,
     );
   }
 }
@@ -119,7 +161,7 @@ class VideoPanel_Control extends StatelessWidget {
         Padding(
           padding: const .fromLTRB(8, 0, 8, 0),
           child: Text(
-            '991x:59:59.999',
+            "991x:59:59'30",
             style: theme.textTheme.labelLarge!.copyWith(
               color: Colors.white,
             ),
