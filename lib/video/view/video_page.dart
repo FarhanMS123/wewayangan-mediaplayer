@@ -82,29 +82,29 @@ class VideoPanel extends StatelessWidget {
           topRight: Radius.circular(kYaruContainerRadius),
         ),
       ),
-      padding: const .all(8),
-      child: Column(
-        textDirection: .ltr,
-        mainAxisAlignment: .center,
-        children: [
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              trackHeight: 2,
-              overlayShape: SliderComponentShape.noOverlay,
-              thumbShape: const LineSliderThumbShape(),
-              padding: .zero,
-            ),
-            child: Container(
-              // width: double.infinity,
+      padding: const .fromLTRB(8, 8, 8, 0),
+      child: IntrinsicWidth(
+        child: Column(
+          textDirection: .ltr,
+          mainAxisAlignment: .center,
+          crossAxisAlignment: .stretch,
+          children: [
+            SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                trackHeight: 2,
+                thumbShape: const LineSliderThumbShape(),
+                // padding: const .fromLTRB(8, 4, 8, 0),
+                padding: .zero,
+              ),
               child: Slider(
                 max: 2 * 60 * 60,
                 value: 1 * 60 * 60,
                 onChanged: (value) {},
               ),
             ),
-          ),
-          const VideoPanel_Control(),
-        ],
+            const VideoPanel_Control(),
+          ],
+        ),
       ),
     );
   }
