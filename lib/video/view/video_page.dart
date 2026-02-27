@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_kit/media_kit.dart';
@@ -20,18 +22,44 @@ class VideoPage extends StatelessWidget {
   }
 }
 
-class VideoView extends StatelessWidget {
+class VideoView extends StatefulWidget {
   const VideoView({required this.onBack, super.key});
 
   final VoidCallback onBack;
+
+  @override
+  State<VideoView> createState() => VideoViewState();
+}
+
+class VideoViewState extends State<VideoView> {
+  late final player = Player();
+  late final controller = VideoController(player);
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(
+      player.open(
+        Media(
+          'https://user-images.githubusercontent.com/28951144/229373695-22f88f13-d18f-4288-9bf1-c3e078d83722.mp4',
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    unawaited(player.dispose());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: .topCenter,
       children: [
-        Container(
-          color: Colors.white,
+        Video(
+          controller: controller,
         ),
         const Positioned(
           bottom: 0,
@@ -79,13 +107,13 @@ class VideoPanel extends StatelessWidget {
           topRight: Radius.circular(kYaruContainerRadius),
         ),
       ),
+      padding: const .only(top: 8),
       child: IntrinsicWidth(
         child: Column(
           textDirection: .ltr,
           mainAxisAlignment: .center,
           crossAxisAlignment: .stretch,
           children: [
-            const Padding(padding: .only(top: 8)),
             SliderTheme(
               data: SliderTheme.of(context).copyWith(
                 trackHeight: 2,
@@ -101,10 +129,6 @@ class VideoPanel extends StatelessWidget {
             const Padding(
               padding: .fromLTRB(8, 0, 8, 0),
               child: VideoPanel_Control(),
-            ),
-            ColoredBox(
-              color: Colors.black.withValues(alpha: 0.2),
-              child: const Text('aaaa'),
             ),
           ],
         ),
