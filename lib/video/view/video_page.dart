@@ -33,10 +33,7 @@ class VideoView extends StatelessWidget {
         Container(
           color: Colors.white,
         ),
-        // RainbowShowcase(),
         const Positioned(
-          // left: 0,
-          // right: 0,
           bottom: 0,
           child: Column(
             children: [
@@ -82,19 +79,18 @@ class VideoPanel extends StatelessWidget {
           topRight: Radius.circular(kYaruContainerRadius),
         ),
       ),
-      padding: const .fromLTRB(8, 8, 8, 0),
       child: IntrinsicWidth(
         child: Column(
           textDirection: .ltr,
           mainAxisAlignment: .center,
           crossAxisAlignment: .stretch,
           children: [
+            const Padding(padding: .only(top: 8)),
             SliderTheme(
               data: SliderTheme.of(context).copyWith(
                 trackHeight: 2,
                 thumbShape: const LineSliderThumbShape(),
-                // padding: const .fromLTRB(8, 4, 8, 0),
-                padding: .zero,
+                padding: const .fromLTRB(8, 0, 8, 0),
               ),
               child: Slider(
                 max: 2 * 60 * 60,
@@ -102,7 +98,14 @@ class VideoPanel extends StatelessWidget {
                 onChanged: (value) {},
               ),
             ),
-            const VideoPanel_Control(),
+            const Padding(
+              padding: .fromLTRB(8, 0, 8, 0),
+              child: VideoPanel_Control(),
+            ),
+            ColoredBox(
+              color: Colors.black.withValues(alpha: 0.2),
+              child: const Text('aaaa'),
+            ),
           ],
         ),
       ),
@@ -153,7 +156,7 @@ class VideoPanel_Control extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
 
     return Row(
       mainAxisAlignment: .center,
