@@ -6,9 +6,13 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:wewayangan_mediapreview/app/app.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:yaru/yaru.dart';
+
+final GetIt getIt = GetIt.instance;
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -42,6 +46,8 @@ Future<void> bootstrap(
   WidgetsFlutterBinding.ensureInitialized();
   SemanticsBinding.instance.ensureSemantics();
   MediaKit.ensureInitialized();
+
+  getIt.registerSingleton<AppParams>(AppParams(args: args));
 
   if (!kIsWeb) {
     await windowManager.ensureInitialized();

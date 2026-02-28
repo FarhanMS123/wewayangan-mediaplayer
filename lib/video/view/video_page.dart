@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:provider/provider.dart';
 import 'package:wewayangan_mediapreview/app/widgets/media_skeleton.dart';
-import 'package:wewayangan_mediapreview/video/cubit/video_cubit.dart';
 import 'package:wewayangan_mediapreview/video/view/video_widgets.dart';
 
 class VideoPage extends StatelessWidget {
@@ -30,6 +28,12 @@ class VideoViewState extends State<VideoView> {
 
   static const mockPlayer = true;
 
+  static VideoViewState of(BuildContext context) {
+    final state = context.findAncestorStateOfType<VideoViewState>();
+    if (state == null) throw Exception('VideoViewState not found in context');
+    return state;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -52,33 +56,30 @@ class VideoViewState extends State<VideoView> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => VideoPlayer(controller),
-      child: Mediaskeleton(
-        body: mockPlayer
-            ? Video(
-                controller: controller,
-              )
-            : Container(color: Colors.white),
-        controls: [
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              trackHeight: 2,
-              thumbShape: const LineSliderThumbShape(),
-              padding: kLRPaddingMargin,
-            ),
-            child: Slider(
-              max: 2 * 60 * 60,
-              value: 1 * 60 * 60,
-              onChanged: (value) {},
-            ),
-          ),
-          const Padding(
+    return Mediaskeleton(
+      body: mockPlayer
+          ? Video(
+              controller: controller,
+            )
+          : Container(color: Colors.white),
+      controls: [
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            trackHeight: 2,
+            thumbShape: const LineSliderThumbShape(),
             padding: kLRPaddingMargin,
-            child: VideoPanel_Control(),
           ),
-        ],
-      ),
+          child: Slider(
+            max: 2 * 60 * 60,
+            value: 1 * 60 * 60,
+            onChanged: (value) {},
+          ),
+        ),
+        const Padding(
+          padding: kLRPaddingMargin,
+          child: VideoPanel_Control(),
+        ),
+      ],
     );
   }
 }
@@ -91,10 +92,7 @@ class VideoPanel_Control extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = Provider.of<VideoPlayer>(
-      context,
-      listen: false,
-    ).controller;
+    final controller = VideoViewState.of(context).controller;
 
     return Row(
       mainAxisAlignment: .center,
