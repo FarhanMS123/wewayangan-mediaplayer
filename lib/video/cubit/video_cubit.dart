@@ -1,8 +1,12 @@
-import 'package:bloc/bloc.dart';
+import 'dart:async';
 
-class CounterCubit extends Cubit<int> {
-  CounterCubit() : super(0);
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
-  void increment() => emit(state + 1);
-  void decrement() => emit(state - 1);
+class VideoPlayer extends ChangeNotifier {
+  VideoPlayer(this.controller);
+
+  final VideoController controller;
 }
