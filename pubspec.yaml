@@ -23,7 +23,7 @@ dependencies:
   provider: ^6.1.5+1
   rxdart: ^0.28.0
   window_manager: ^0.5.1
-  yaru: ^9.0.1
+  yaru: ^10.0.0
 
 dev_dependencies:
   bloc_test: ^10.0.0
