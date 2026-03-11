@@ -7,6 +7,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:wewayangan_mediapreview/app/app.dart';
 import 'package:wewayangan_mediapreview/app/widgets/media_skeleton.dart';
 import 'package:wewayangan_mediapreview/video/view/video_widgets.dart';
+import 'package:rxdart/rxdart.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -15,25 +16,32 @@ class VideoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const VideoView();
+    return VideoView();
   }
 }
 
 class VideoView extends StatefulWidget {
-  const VideoView({
+  factory VideoView({Key? key}) {
+    const demoFilePath =
+        'https://user-images.githubusercontent.com/28951144/229373695-22f88f13-d18f-4288-9bf1-c3e078d83722.mp4';
+    String _filePath = '';
+    if (getIt<FlavorParams>().demo) _filePath = demoFilePath;
+    if (getIt<AppParams>().args.isNotEmpty &&
+        getIt<AppParams>().args[0].isNotEmpty) {
+      _filePath = getIt<AppParams>().args[0];
+    }
+    return VideoView._(
+      key: key,
+      filePath: _filePath,
+    );
+  }
+
+  const VideoView._({
+    required this.filePath,
     super.key,
   });
 
-  String get filePath {
-    const demoFilePath =
-        'https://user-images.githubusercontent.com/28951144/229373695-22f88f13-d18f-4288-9bf1-c3e078d83722.mp4';
-    if (getIt<FlavorParams>().demo) return demoFilePath;
-    if (getIt<AppParams>().args.isNotEmpty &&
-        getIt<AppParams>().args[0].isNotEmpty) {
-      return getIt<AppParams>().args[0];
-    }
-    return '';
-  }
+  final String filePath;
 
   @override
   State<VideoView> createState() => VideoViewState();
@@ -71,7 +79,7 @@ class VideoViewState extends State<VideoView> {
 
   @override
   Widget build(BuildContext context) {
-    if (!disposePlayer) return const Text('Player Disposed');
+    if (disposePlayer) return const Text('Player Disposed');
 
     return Mediaskeleton(
       body: widget.filePath.isNotEmpty
@@ -96,6 +104,16 @@ class VideoViewState extends State<VideoView> {
         const Padding(
           padding: kLRPaddingMargin,
           child: VideoPanel_Control(),
+        ),
+        Row(
+          children: [
+            FilledButton.tonal(
+              onPressed: () {
+                print([player.state.rate, player.state.videoParams.aspect]);
+              },
+              child: const Text('Rate'),
+            ),
+          ],
         ),
       ],
     );
@@ -149,12 +167,36 @@ class VideoPanel_Control extends StatelessWidget {
           onPressed: () {},
         ),
         StreamBuilder(
-          stream: player.stream.playing,
+          stream: player.stream.rate,
+          builder: (_, _) => TextButton.icon(
+            icon: const Icon(Icons.fast_rewind_rounded),
+            label: Text(
+              player.state.rate < 0
+                  ? '${double.parse(player.state.rate.toStringAsFixed(3))}x'
+                  : '',
+            ),
+            onPressed: () {
+              var rate = (player.state.rate) - 0.25;
+              if (rate == 0) rate -= 0.25;
+              unawaited(player.setRate(rate));
+            },
+          ),
+        ),
+        StreamBuilder(
+          stream: Rx.combineLatest2(
+            player.stream.playing,
+            player.stream.rate,
+            (_, _) {},
+          ),
           builder: (_, _) => TextButton.icon(
             icon: player.state.playing
                 ? const Icon(Icons.pause_rounded)
                 : const Icon(Icons.play_arrow_rounded),
-            label: const Text('1x'),
+            label: Text(
+              true
+                  ? ''
+                  : '${double.parse(player.state.rate.toStringAsFixed(3))}x',
+            ),
             onPressed: () {
               unawaited(
                 player.state.playing ? player.pause() : player.play(),
@@ -162,15 +204,48 @@ class VideoPanel_Control extends StatelessWidget {
             },
           ),
         ),
-        IconButton(
-          icon: const Icon(Icons.fast_forward_rounded),
-          onPressed: () {},
+        StreamBuilder(
+          stream: player.stream.rate,
+          builder: (context, asyncSnapshot) {
+            return switchIconTextButton(
+              icon: const Icon(Icons.fast_forward_rounded),
+              onPressed: () {
+                var rate = (player.state.rate) + 0.25;
+                if (rate == 0) rate += 0.25;
+                unawaited(player.setRate(player.state.rate + 0.25));
+              },
+              label: player.state.rate >= 0
+                  ? Text(
+                      '${double.parse(player.state.rate.toStringAsFixed(3))}x',
+                    )
+                  : null,
+            );
+          },
         ),
         IconButton(
           icon: const Icon(Icons.more_horiz_rounded),
           onPressed: () {},
         ),
       ],
+    );
+  }
+
+  Widget switchIconTextButton({
+    required Widget icon,
+    required VoidCallback onPressed,
+    Widget? label,
+  }) {
+    if (label != null) {
+      return TextButton.icon(
+        icon: icon,
+        label: label,
+        onPressed: onPressed,
+      );
+    }
+
+    return IconButton(
+      icon: icon,
+      onPressed: onPressed,
     );
   }
 }

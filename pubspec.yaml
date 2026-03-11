@@ -21,6 +21,7 @@ dependencies:
   media_kit_libs_video: ^1.0.7
   media_kit_video: ^2.0.1
   provider: ^6.1.5+1
+  rxdart: ^0.28.0
   window_manager: ^0.5.1
   yaru: ^9.0.1
 
