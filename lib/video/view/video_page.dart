@@ -168,34 +168,27 @@ class VideoPanel_Control extends StatelessWidget {
         ),
         StreamBuilder(
           stream: player.stream.rate,
-          builder: (_, _) => TextButton.icon(
+          builder: (_, _) => IconButton(
             icon: const Icon(Icons.fast_rewind_rounded),
-            label: Text(
-              player.state.rate < 0
-                  ? '${double.parse(player.state.rate.toStringAsFixed(3))}x'
-                  : '',
-            ),
             onPressed: () {
-              var rate = (player.state.rate) - 0.25;
-              if (rate == 0) rate -= 0.25;
-              unawaited(player.setRate(rate));
+              final rate = (player.state.rate) - 0.05;
+              if (rate > 0) unawaited(player.setRate(rate));
             },
           ),
         ),
         StreamBuilder(
+          // stream: player.stream.playing,
           stream: Rx.combineLatest2(
-            player.stream.playing,
-            player.stream.rate,
-            (_, _) {},
+            player.stream.rate.startWith(player.state.rate),
+            player.stream.playing.startWith(player.state.playing),
+            (_, _) => true,
           ),
           builder: (_, _) => TextButton.icon(
             icon: player.state.playing
                 ? const Icon(Icons.pause_rounded)
                 : const Icon(Icons.play_arrow_rounded),
             label: Text(
-              true
-                  ? ''
-                  : '${double.parse(player.state.rate.toStringAsFixed(3))}x',
+              '${double.parse(player.state.rate.toStringAsFixed(3))}x',
             ),
             onPressed: () {
               unawaited(
@@ -207,18 +200,12 @@ class VideoPanel_Control extends StatelessWidget {
         StreamBuilder(
           stream: player.stream.rate,
           builder: (context, asyncSnapshot) {
-            return switchIconTextButton(
+            return IconButton(
               icon: const Icon(Icons.fast_forward_rounded),
               onPressed: () {
-                var rate = (player.state.rate) + 0.25;
-                if (rate == 0) rate += 0.25;
-                unawaited(player.setRate(player.state.rate + 0.25));
+                final rate = (player.state.rate) + 0.25;
+                if (rate > 0) unawaited(player.setRate(rate));
               },
-              label: player.state.rate >= 0
-                  ? Text(
-                      '${double.parse(player.state.rate.toStringAsFixed(3))}x',
-                    )
-                  : null,
             );
           },
         ),
