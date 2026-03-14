@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:wewayangan_mediapreview/app/app.dart';
 import 'package:wewayangan_mediapreview/app/widgets/media_skeleton.dart';
 import 'package:wewayangan_mediapreview/video/view/video_widgets.dart';
-import 'package:rxdart/rxdart.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -95,10 +95,18 @@ class VideoViewState extends State<VideoView> {
             thumbShape: const LineSliderThumbShape(),
             padding: kLRPaddingMargin,
           ),
-          child: Slider(
-            max: 2 * 60 * 60,
-            value: 1 * 60 * 60,
-            onChanged: (value) {},
+          child: StreamBuilder(
+            stream: player.stream.position,
+            builder: (context, asyncSnapshot) {
+              return Slider(
+                max: player.state.duration.inMicroseconds.toDouble(),
+                value: player.state.position.inMicroseconds.toDouble(),
+                onChangeStart: (_) => player.pause(),
+                onChangeEnd: (_) => player.play(),
+                onChanged: (value) =>
+                    player.seek(Duration(microseconds: value.toInt())),
+              );
+            },
           ),
         ),
         const Padding(
@@ -108,9 +116,7 @@ class VideoViewState extends State<VideoView> {
         Row(
           children: [
             FilledButton.tonal(
-              onPressed: () {
-                print([player.state.rate, player.state.videoParams.aspect]);
-              },
+              onPressed: () {},
               child: const Text('Rate'),
             ),
           ],
@@ -136,11 +142,16 @@ class VideoPanel_Control extends StatelessWidget {
       children: [
         Padding(
           padding: kLRPaddingMargin,
-          child: Text(
-            "991x:59:59'30",
-            style: theme.textTheme.labelLarge!.copyWith(
-              color: Colors.white,
-            ),
+          child: StreamBuilder(
+            stream: player.stream.position,
+            builder: (context, asyncSnapshot) {
+              return Text(
+                duration2dayseconds(player.state.position),
+                style: theme.textTheme.labelLarge!.copyWith(
+                  color: Colors.white,
+                ),
+              );
+            },
           ),
         ),
         StreamBuilder(
@@ -177,7 +188,6 @@ class VideoPanel_Control extends StatelessWidget {
           ),
         ),
         StreamBuilder(
-          // stream: player.stream.playing,
           stream: Rx.combineLatest2(
             player.stream.rate.startWith(player.state.rate),
             player.stream.playing.startWith(player.state.playing),
@@ -234,5 +244,31 @@ class VideoPanel_Control extends StatelessWidget {
       icon: icon,
       onPressed: onPressed,
     );
+  }
+
+  String duration2dayseconds(Duration duration) {
+    final day = duration.inDays;
+    final iHours = duration.inHours % 24;
+    final iMins = duration.inMinutes % 60;
+    final iSecs = duration.inSeconds % 60;
+    final iMs = duration.inMilliseconds % 1000;
+    final iMcs = duration.inMicroseconds % 1000;
+
+    final hours = iHours.toString().padLeft(2, '0');
+    final mins = iMins.toString().padLeft(2, '0');
+    final secs = iSecs.toString().padLeft(2, '0');
+    final ms = iMs.toString().padLeft(3, '0');
+    final mcs = iMcs.toString().padLeft(3, '0');
+
+    var timestamps = '';
+
+    if (day > 0) timestamps += '$day:'; // 31:23:59:59
+    if (duration.inHours > 0) timestamps += '$hours:'; // 23:59:59
+    if (duration.inMinutes > 0) timestamps += mins; // 59:59.999
+    timestamps += ':$secs';
+    if (duration.inMinutes <= 59) timestamps += '.$ms';
+    if (duration.inSeconds <= 59) timestamps += "'$mcs"; // :00.999'999
+
+    return timestamps;
   }
 }
