@@ -39,7 +39,7 @@ class App extends StatelessWidget {
         },
       ),
       home: const Material(
-        type: .transparency,
+        color: Colors.white,
         child: VideoPage(),
       ),
     );

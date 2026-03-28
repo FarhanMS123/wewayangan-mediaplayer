@@ -52,6 +52,7 @@ class VideoViewState extends State<VideoView> {
   late final controller = VideoController(player);
 
   bool disposePlayer = false;
+  bool isCurrentlyPlaying = false;
   static const mockPlayer = true;
 
   static VideoViewState of(BuildContext context) {
@@ -86,6 +87,7 @@ class VideoViewState extends State<VideoView> {
           ? Video(
               controller: controller,
               controls: null,
+              fill: Colors.transparent,
             )
           : Container(color: Colors.white),
       controls: [
@@ -101,10 +103,24 @@ class VideoViewState extends State<VideoView> {
               return Slider(
                 max: player.state.duration.inMicroseconds.toDouble(),
                 value: player.state.position.inMicroseconds.toDouble(),
+                secondaryTrackValue: player.state.buffer.inMicroseconds
+                    .toDouble(),
                 onChangeStart: (_) => player.pause(),
-                onChangeEnd: (_) => player.play(),
+                onChangeEnd: (_) => isCurrentlyPlaying ? player.play() : null,
                 onChanged: (value) =>
                     player.seek(Duration(microseconds: value.toInt())),
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: kLRPaddingMargin,
+          child: StreamBuilder(
+            stream: player.stream.position,
+            builder: (context, asyncSnapshot) {
+              return VideoPanel_Timestamp(
+                player.state.position,
+                player.state.duration,
               );
             },
           ),
@@ -134,26 +150,13 @@ class VideoPanel_Control extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = VideoViewState.of(context).controller;
+    final videoViewState = VideoViewState.of(context);
+    final controller = videoViewState.controller;
     final player = controller.player;
 
     return Row(
       mainAxisAlignment: .center,
       children: [
-        Padding(
-          padding: kLRPaddingMargin,
-          child: StreamBuilder(
-            stream: player.stream.position,
-            builder: (context, asyncSnapshot) {
-              return Text(
-                duration2dayseconds(player.state.position),
-                style: theme.textTheme.labelLarge!.copyWith(
-                  color: Colors.white,
-                ),
-              );
-            },
-          ),
-        ),
         StreamBuilder(
           stream: player.stream.volume,
           builder: (_, _) {
@@ -172,10 +175,6 @@ class VideoPanel_Control extends StatelessWidget {
               },
             );
           },
-        ),
-        IconButton(
-          icon: const Icon(Icons.fast_rewind_rounded),
-          onPressed: () {},
         ),
         StreamBuilder(
           stream: player.stream.rate,
@@ -201,6 +200,7 @@ class VideoPanel_Control extends StatelessWidget {
               '${double.parse(player.state.rate.toStringAsFixed(3))}x',
             ),
             onPressed: () {
+              videoViewState.isCurrentlyPlaying = !player.state.playing;
               unawaited(
                 player.state.playing ? player.pause() : player.play(),
               );
@@ -243,6 +243,34 @@ class VideoPanel_Control extends StatelessWidget {
     return IconButton(
       icon: icon,
       onPressed: onPressed,
+    );
+  }
+}
+
+class VideoPanel_Timestamp extends StatelessWidget {
+  const VideoPanel_Timestamp(
+    this.current,
+    this.length, {
+    super.key,
+  });
+
+  final Duration current;
+  final Duration length;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return DefaultTextStyle.merge(
+      style: theme.textTheme.labelSmall,
+      child: Row(
+        mainAxisAlignment: .center,
+        spacing: kPaddingMargin,
+        children: [
+          Text(duration2dayseconds(current)),
+          const Text('/'),
+          Text(duration2dayseconds(length)),
+        ],
+      ),
     );
   }
 
