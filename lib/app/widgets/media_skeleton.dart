@@ -108,3 +108,59 @@ class MediaSkeletonHeader extends StatelessWidget {
     );
   }
 }
+
+class MediaSkeletonFrame extends StatefulWidget {
+  const MediaSkeletonFrame({
+    required this.ratio,
+    required this.builder,
+    super.key,
+  });
+
+  final double ratio; // = width / height
+  final WidgetBuilder builder;
+
+  @override
+  State<MediaSkeletonFrame> createState() => _MediaSkeletonFrameState();
+}
+
+class _MediaSkeletonFrameState extends State<MediaSkeletonFrame> {
+  bool hasInit = false;
+  late double width;
+  late double height;
+  late double top = 0;
+  late double left = 0;
+
+  double zoom = 1;
+  double angle = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (ctx, c) {
+        // h1 . r = w1
+        // if true;
+        final isLessWidth = c.maxHeight * widget.ratio < c.maxWidth;
+        width = isLessWidth
+            ? c.maxHeight * widget.ratio * zoom
+            : c.maxWidth * zoom;
+        height = isLessWidth
+            ? c.maxHeight * zoom
+            : c.maxWidth * zoom / widget.ratio;
+
+        if (!hasInit) {
+          top = (c.maxHeight - height) / 2;
+          left = (c.maxWidth - width) / 2;
+          hasInit = true;
+        }
+
+        return Positioned(
+          top: top,
+          left: left,
+          width: width,
+          height: height,
+          child: widget.builder(context),
+        );
+      },
+    );
+  }
+}
