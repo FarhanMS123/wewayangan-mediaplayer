@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:yaru/yaru.dart';
 
@@ -161,11 +163,15 @@ class _MediaSkeletonFrameState extends State<_MediaSkeletonFrame> {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: .tight(
-        Size(widget.maxWidth * zoom, widget.maxHeight * zoom),
+    return Transform(
+      alignment: .center,
+      transform: .translationValues(x, y, 0)..rotateZ(angle * pi / 180),
+      child: ConstrainedBox(
+        constraints: .tight(
+          Size(widget.maxWidth * zoom, widget.maxHeight * zoom),
+        ),
+        child: widget.child,
       ),
-      child: widget.child,
     );
   }
 }
