@@ -7,6 +7,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:wewayangan_mediapreview/app/app.dart';
 import 'package:wewayangan_mediapreview/app/widgets/media_skeleton.dart';
+import 'package:wewayangan_mediapreview/app/widgets/media_skeleton_frame.dart';
 import 'package:wewayangan_mediapreview/video/view/video_widgets.dart';
 
 final GetIt getIt = GetIt.instance;
