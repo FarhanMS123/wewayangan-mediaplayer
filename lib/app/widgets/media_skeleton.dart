@@ -33,7 +33,9 @@ class Mediaskeleton extends StatelessWidget {
       children: [
         // ? MediaSkeletonView
         // TODO(view): can scale in/out, rotate.
-        body,
+        Positioned.fill(
+          child: Center(child: body),
+        ),
         // ? MediaSkeletonHeader
         // ? MediaSkeletonPanel
         Positioned(
@@ -107,66 +109,63 @@ class MediaSkeletonHeader extends StatelessWidget {
   }
 }
 
-class MediaSkeletonFrame extends StatefulWidget {
+class MediaSkeletonFrame extends StatelessWidget {
   const MediaSkeletonFrame({
-    required this.ratio,
-    required this.builder,
+    required this.child,
+    required this.aspect,
     super.key,
   });
 
-  final double ratio; // = width / height
-  final WidgetBuilder builder;
+  final double aspect; // = width / height
+  final Widget child;
 
   @override
-  State<MediaSkeletonFrame> createState() => _MediaSkeletonFrameState();
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: aspect,
+      child: LayoutBuilder(
+        builder: (_, c) {
+          return Center(
+            child: _MediaSkeletonFrame(
+              maxWidth: c.maxWidth,
+              maxHeight: c.maxHeight,
+              child: child,
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
-class _MediaSkeletonFrameState extends State<MediaSkeletonFrame> {
-  bool hasInit = false;
-  late double init_vw;
-  late double init_vh;
+class _MediaSkeletonFrame extends StatefulWidget {
+  const _MediaSkeletonFrame({
+    required this.maxWidth,
+    required this.maxHeight,
+    required this.child,
+  });
 
-  late double width;
-  late double height;
-  late double top = 0;
-  late double left = 0;
+  final double maxWidth;
+  final double maxHeight;
+  final Widget child;
 
-  double zoom = 1;
+  @override
+  State<_MediaSkeletonFrame> createState() => _MediaSkeletonFrameState();
+}
+
+class _MediaSkeletonFrameState extends State<_MediaSkeletonFrame> {
+  double x = 0;
+  double y = 0;
+  double zoom = .5;
   double angle = 0;
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (ctx, c) {
-        // h1 . r = w1
-        // if true;
-        final isLessWidth = c.maxHeight * widget.ratio < c.maxWidth;
-        width = isLessWidth
-            ? c.maxHeight * widget.ratio * zoom
-            : c.maxWidth * zoom;
-        height = isLessWidth
-            ? c.maxHeight * zoom
-            : c.maxWidth * zoom / widget.ratio;
-
-        if (!hasInit) {
-          init_vw = c.maxWidth;
-          init_vh = c.maxHeight;
-          top = c.maxHeight / 2 - height;
-          left = c.maxWidth / 2 - width;
-          hasInit = true;
-        }
-
-        return Positioned(
-          top: top + (c.maxHeight - init_vh) / 2,
-          left: left + (c.maxWidth - init_vw) / 2,
-          width: width,
-          height: height,
-          child: ConstrainedBox(
-            constraints: .tight(Size(width, height)),
-            child: widget.builder(context),
-          ),
-        );
-      },
+    return ConstrainedBox(
+      constraints: .tight(
+        Size(widget.maxWidth * zoom, widget.maxHeight * zoom),
+      ),
+      child: widget.child,
     );
   }
 }

@@ -87,15 +87,29 @@ class VideoViewState extends State<VideoView> {
           ? StreamBuilder(
               stream: player.stream.videoParams,
               builder: (context, asyncSnapshot) {
+                final videoParams = player.state.videoParams;
+                late double aspect;
+
+                if (videoParams.aspect != null) {
+                  aspect = videoParams.aspect!;
+                } else if (videoParams.dw != null && videoParams.dh != null) {
+                  aspect = videoParams.dw! / videoParams.dh!;
+                } else if (videoParams.w != null && videoParams.h != null) {
+                  aspect = videoParams.w! / videoParams.h!;
+                } else if (player.state.width != null &&
+                    player.state.height != null) {
+                  aspect = player.state.width! / player.state.height!;
+                } else {
+                  aspect = 1;
+                }
+
                 return MediaSkeletonFrame(
-                  ratio: player.state.videoParams.aspect ?? 1,
-                  builder: (context) {
-                    return Video(
-                      controller: controller,
-                      // controls: null,
-                      fill: Colors.transparent,
-                    );
-                  },
+                  aspect: aspect,
+                  child: Video(
+                    controller: controller,
+                    // controls: null,
+                    fill: Colors.transparent,
+                  ),
                 );
               },
             )
