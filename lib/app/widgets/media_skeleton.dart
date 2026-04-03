@@ -33,9 +33,7 @@ class Mediaskeleton extends StatelessWidget {
       children: [
         // ? MediaSkeletonView
         // TODO(view): can scale in/out, rotate.
-        Positioned.fill(
-          child: body,
-        ),
+        body,
         // ? MediaSkeletonHeader
         // ? MediaSkeletonPanel
         Positioned(
@@ -125,6 +123,9 @@ class MediaSkeletonFrame extends StatefulWidget {
 
 class _MediaSkeletonFrameState extends State<MediaSkeletonFrame> {
   bool hasInit = false;
+  late double init_vw;
+  late double init_vh;
+
   late double width;
   late double height;
   late double top = 0;
@@ -148,17 +149,22 @@ class _MediaSkeletonFrameState extends State<MediaSkeletonFrame> {
             : c.maxWidth * zoom / widget.ratio;
 
         if (!hasInit) {
-          top = (c.maxHeight - height) / 2;
-          left = (c.maxWidth - width) / 2;
+          init_vw = c.maxWidth;
+          init_vh = c.maxHeight;
+          top = c.maxHeight / 2 - height;
+          left = c.maxWidth / 2 - width;
           hasInit = true;
         }
 
         return Positioned(
-          top: top,
-          left: left,
+          top: top + (c.maxHeight - init_vh) / 2,
+          left: left + (c.maxWidth - init_vw) / 2,
           width: width,
           height: height,
-          child: widget.builder(context),
+          child: ConstrainedBox(
+            constraints: .tight(Size(width, height)),
+            child: widget.builder(context),
+          ),
         );
       },
     );

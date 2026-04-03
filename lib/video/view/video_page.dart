@@ -84,10 +84,20 @@ class VideoViewState extends State<VideoView> {
 
     return Mediaskeleton(
       body: widget.filePath.isNotEmpty
-          ? Video(
-              controller: controller,
-              controls: null,
-              fill: Colors.transparent,
+          ? StreamBuilder(
+              stream: player.stream.videoParams,
+              builder: (context, asyncSnapshot) {
+                return MediaSkeletonFrame(
+                  ratio: player.state.videoParams.aspect ?? 1,
+                  builder: (context) {
+                    return Video(
+                      controller: controller,
+                      // controls: null,
+                      fill: Colors.transparent,
+                    );
+                  },
+                );
+              },
             )
           : Container(color: Colors.white),
       controls: [
