@@ -46,21 +46,39 @@ class _MediaSkeletonFrame extends StatefulWidget {
 }
 
 class _MediaSkeletonFrameState extends State<_MediaSkeletonFrame> {
+  bool isEditGuide = false;
+  // first two-finger hold; release one finger; then move around;
+  bool isGestureStart = false;
+
   double x = 0;
   double y = 0;
-  double zoom = .5;
+  double zoom = 1;
   double angle = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Transform(
-      alignment: .center,
-      transform: .translationValues(x, y, 0)..rotateZ(angle * pi / 180),
-      child: ConstrainedBox(
-        constraints: .tight(
-          Size(widget.maxWidth * zoom, widget.maxHeight * zoom),
+    // two-finger touch -> start gesture
+    // one-finger / two finger move -> pan
+    // two-finger pinch/stretch -> zoom
+    // two-finger slide side-ways -> rotate
+    // three-finger -> reset
+    // release all finger -> end gesture
+    return GestureDetector(
+      child: Transform(
+        alignment: .center,
+        transform: .translationValues(x, y, 0),
+        child: SizedBox(
+          child: Transform(
+            alignment: .center,
+            transform: .rotationZ(angle * pi / 180),
+            child: ConstrainedBox(
+              constraints: .tight(
+                Size(widget.maxWidth * zoom, widget.maxHeight * zoom),
+              ),
+              child: widget.child,
+            ),
+          ),
         ),
-        child: widget.child,
       ),
     );
   }

@@ -41,8 +41,7 @@ Future<void> bootstrap(
   Bloc.observer = const AppBlocObserver();
 
   // Add cross-flavor configuration here
-  await YaruWindowTitleBar.ensureInitialized();
-
+  // await YaruWindowTitleBar.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
   SemanticsBinding.instance.ensureSemantics();
   MediaKit.ensureInitialized();
