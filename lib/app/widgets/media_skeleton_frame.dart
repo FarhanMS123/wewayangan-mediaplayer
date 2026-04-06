@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wewayangan_mediapreview/app/app.dart';
 
 class MediaSkeletonFrame extends StatelessWidget {
   const MediaSkeletonFrame({
@@ -30,7 +32,7 @@ class MediaSkeletonFrame extends StatelessWidget {
   }
 }
 
-class _MediaSkeletonFrame extends StatefulWidget {
+class _MediaSkeletonFrame extends StatelessWidget {
   const _MediaSkeletonFrame({
     required this.maxWidth,
     required this.maxHeight,
@@ -42,21 +44,16 @@ class _MediaSkeletonFrame extends StatefulWidget {
   final Widget child;
 
   @override
-  State<_MediaSkeletonFrame> createState() => _MediaSkeletonFrameState();
-}
-
-class _MediaSkeletonFrameState extends State<_MediaSkeletonFrame> {
-  bool isEditGuide = false;
-  // first two-finger hold; release one finger; then move around;
-  bool isGestureStart = false;
-
-  double x = 0;
-  double y = 0;
-  double zoom = 1;
-  double angle = 0;
-
-  @override
   Widget build(BuildContext context) {
+    final (x, y, zoom, angle) = context.select(
+      (MediaSkeletonCubit c) => (
+        c.state.x,
+        c.state.y,
+        c.state.zoom,
+        c.state.angle,
+      ),
+    );
+
     // two-finger touch -> start gesture
     // one-finger / two finger move -> pan
     // two-finger pinch/stretch -> zoom
@@ -73,9 +70,9 @@ class _MediaSkeletonFrameState extends State<_MediaSkeletonFrame> {
             transform: .rotationZ(angle * pi / 180),
             child: ConstrainedBox(
               constraints: .tight(
-                Size(widget.maxWidth * zoom, widget.maxHeight * zoom),
+                Size(maxWidth * zoom, maxHeight * zoom),
               ),
-              child: widget.child,
+              child: child,
             ),
           ),
         ),

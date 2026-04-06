@@ -26,9 +26,6 @@ class MediaSkeletonState extends Equatable {
   List<Object?> get props => [isGestureGuide, x, y, zoom, angle];
 }
 
-class MediaSkeletonCubit extends Cubit<int> {
-  MediaSkeletonCubit() : super(0);
-
-  void increment() => emit(state + 1);
-  void decrement() => emit(state - 1);
+class MediaSkeletonCubit extends Cubit<MediaSkeletonState> {
+  MediaSkeletonCubit() : super(const MediaSkeletonState());
 }

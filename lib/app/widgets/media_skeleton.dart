@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wewayangan_mediapreview/app/app.dart';
 import 'package:yaru/yaru.dart';
 
 const double kContainerRadius = kYaruContainerRadius;
@@ -30,6 +32,15 @@ class Mediaskeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => MediaSkeletonCubit(),
+      child: Builder(
+        builder: buildView,
+      ),
+    );
+  }
+
+  Stack buildView(BuildContext context) {
     return Stack(
       alignment: .topCenter,
       children: [
