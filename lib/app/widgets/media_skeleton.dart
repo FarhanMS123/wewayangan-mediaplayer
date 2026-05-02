@@ -41,6 +41,10 @@ class Mediaskeleton extends StatelessWidget {
   }
 
   Stack buildView(BuildContext context) {
+    final IsExtrasOn = context.select(
+      (MediaSkeletonCubit c) => c.state.isExtrasOn,
+    );
+
     return Stack(
       alignment: .topCenter,
       children: [
@@ -57,16 +61,8 @@ class Mediaskeleton extends StatelessWidget {
             children: [
               // ? MediaSkeletonPanel_Extras
               // TODO(extras): built-in scroll, and small full button
-              if (extras != null)
-                Container(
-                  margin: const .all(kPaddingMargin),
-                  decoration: BoxDecoration(
-                    color: kBlack_04,
-                    borderRadius: const .all(.circular(kYaruContainerRadius)),
-                  ),
-                  padding: const .all(kPaddingMargin),
-                  child: extras,
-                ),
+              if (extras != null && IsExtrasOn == .hide)
+                MediaSkeleton_Extras(extras: extras),
               // ? MediaSkeletonPanel_Control
               Container(
                 decoration: BoxDecoration(
@@ -90,6 +86,32 @@ class Mediaskeleton extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class MediaSkeleton_Extras extends StatelessWidget {
+  const MediaSkeleton_Extras({
+    super.key,
+    required this.extras,
+  });
+
+  final Widget? extras;
+
+  @override
+  Widget build(BuildContext context) {
+    final IsExtrasOn = context.select(
+      (MediaSkeletonCubit c) => c.state.isExtrasOn,
+    );
+
+    return Container(
+      margin: const .all(kPaddingMargin),
+      decoration: BoxDecoration(
+        color: kBlack_04,
+        borderRadius: const .all(.circular(kYaruContainerRadius)),
+      ),
+      padding: const .all(kPaddingMargin),
+      child: extras,
     );
   }
 }

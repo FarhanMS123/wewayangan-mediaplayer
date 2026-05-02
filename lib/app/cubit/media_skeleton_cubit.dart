@@ -2,9 +2,12 @@ import 'package:bloc/bloc.dart';
 import 'package:data_class/data_class.dart';
 import 'package:equatable/equatable.dart';
 
+enum IsExtrasOn { hide, show, open }
+
 @Data()
 class MediaSkeletonState extends Equatable {
   const MediaSkeletonState({
+    this.isExtrasOn = .hide,
     this.isGestureGuide = false,
     this.isGestureStart = false,
     this.x = 0,
@@ -12,6 +15,8 @@ class MediaSkeletonState extends Equatable {
     this.zoom = 1,
     this.angle = 0,
   });
+
+  final IsExtrasOn isExtrasOn;
 
   final bool isGestureGuide;
   // first two-finger hold; release one finger; then move around;

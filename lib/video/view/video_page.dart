@@ -91,18 +91,15 @@ class VideoViewState extends State<VideoView> {
                 final videoParams = player.state.videoParams;
                 late double aspect;
 
-                if (videoParams.aspect != null) {
-                  aspect = videoParams.aspect!;
-                } else if (videoParams.dw != null && videoParams.dh != null) {
-                  aspect = videoParams.dw! / videoParams.dh!;
-                } else if (videoParams.w != null && videoParams.h != null) {
-                  aspect = videoParams.w! / videoParams.h!;
-                } else if (player.state.width != null &&
-                    player.state.height != null) {
-                  aspect = player.state.width! / player.state.height!;
-                } else {
-                  aspect = 1;
-                }
+                double? safeDivide(num? a, num? b) =>
+                    (a != null && b != null) ? a / b : null;
+
+                aspect =
+                    videoParams.aspect ??
+                    safeDivide(videoParams.dw, videoParams.dh) ??
+                    safeDivide(videoParams.w, videoParams.h) ??
+                    safeDivide(player.state.width, player.state.height) ??
+                    1;
 
                 return MediaSkeletonFrame(
                   aspect: aspect,
